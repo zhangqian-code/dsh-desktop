@@ -1,0 +1,4 @@
+interface:
+  display_name: "DSH Upstream Sync"
+  short_description: "Safely assess and integrate DSH upstream changes"
+  default_prompt: "Use $dsh-upstream-sync in check mode to assess upstream changes and integration risk."
