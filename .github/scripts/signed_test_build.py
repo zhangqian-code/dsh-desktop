@@ -15,10 +15,10 @@ from feishu_release_notes import send_feishu_notification
 
 INSTALLERS = {
     "macos": [
-        ("macOS Apple Silicon", "dsh-desktop-mac-arm64.dmg"),
-        ("macOS Intel", "dsh-desktop-mac-x64.dmg"),
+        ("macOS Apple Silicon", "king-dsh-mac-arm64.dmg"),
+        ("macOS Intel", "king-dsh-mac-x64.dmg"),
     ],
-    "windows": [("Windows x64", "dsh-desktop-windows-x64-setup.exe")],
+    "windows": [("Windows x64", "king-dsh-windows-x64-setup.exe")],
 }
 
 

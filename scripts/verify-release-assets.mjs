@@ -6,14 +6,14 @@ import { fileURLToPath } from 'node:url'
 import { parse } from 'yaml'
 
 const REQUIRED_ASSETS = [
-  'dsh-desktop-mac-arm64.dmg',
-  'dsh-desktop-mac-arm64.zip',
-  'dsh-desktop-mac-arm64.zip.blockmap',
-  'dsh-desktop-mac-x64.dmg',
-  'dsh-desktop-mac-x64.zip',
-  'dsh-desktop-mac-x64.zip.blockmap',
-  'dsh-desktop-windows-x64-setup.exe',
-  'dsh-desktop-windows-x64-setup.exe.blockmap',
+  'king-dsh-mac-arm64.dmg',
+  'king-dsh-mac-arm64.zip',
+  'king-dsh-mac-arm64.zip.blockmap',
+  'king-dsh-mac-x64.dmg',
+  'king-dsh-mac-x64.zip',
+  'king-dsh-mac-x64.zip.blockmap',
+  'king-dsh-windows-x64-setup.exe',
+  'king-dsh-windows-x64-setup.exe.blockmap',
   'latest-mac.yml',
   'latest.yml'
 ]
@@ -109,9 +109,9 @@ export async function verifyReleaseAssets(releaseDir, version, options = {}) {
     await assertFileHeader(file, kind, fileStat.size)
   }
 
-  await assertUpdateEntry(root, 'latest.yml', version, 'dsh-desktop-windows-x64-setup.exe')
-  await assertUpdateEntry(root, 'latest-mac.yml', version, 'dsh-desktop-mac-arm64.zip')
-  await assertUpdateEntry(root, 'latest-mac.yml', version, 'dsh-desktop-mac-x64.zip')
+  await assertUpdateEntry(root, 'latest.yml', version, 'king-dsh-windows-x64-setup.exe')
+  await assertUpdateEntry(root, 'latest-mac.yml', version, 'king-dsh-mac-arm64.zip')
+  await assertUpdateEntry(root, 'latest-mac.yml', version, 'king-dsh-mac-x64.zip')
 }
 
 async function main() {

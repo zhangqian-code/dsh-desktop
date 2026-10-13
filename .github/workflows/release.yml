@@ -226,7 +226,7 @@ jobs:
         env:
           CSC_KEYCHAIN: ${{ steps.signing_keychain.outputs.keychain }}
         run: |
-          dmg_path="dist/dsh-desktop-mac-${{ matrix.arch }}.dmg"
+          dmg_path="dist/king-dsh-mac-${{ matrix.arch }}.dmg"
           identity="$(security find-identity -v -p codesigning "$CSC_KEYCHAIN" | awk '/Developer ID Application/ { print $2; exit }')"
           test -n "$identity" || { echo "::error::Developer ID Application identity not found"; exit 1; }
           codesign --keychain "$CSC_KEYCHAIN" --sign "$identity" --timestamp --force "$dmg_path"
@@ -258,22 +258,22 @@ jobs:
       - name: Verify signed and notarized ${{ matrix.label }} app
         if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && (inputs.mode == 'signed' || inputs.mode == 'prerelease'))
         run: |
-          app_path="dist/${{ matrix.app-directory }}/DSH Desktop.app"
+          app_path="dist/${{ matrix.app-directory }}/king-dsh.app"
           codesign --verify --deep --strict --verbose=2 "$app_path"
           spctl --assess --type execute --verbose=4 "$app_path"
           xcrun stapler validate "$app_path"
-          codesign --verify --verbose=2 dist/dsh-desktop-mac-${{ matrix.arch }}.dmg
-          spctl --assess --type open --context context:primary-signature --verbose=4 dist/dsh-desktop-mac-${{ matrix.arch }}.dmg
-          xcrun stapler validate dist/dsh-desktop-mac-${{ matrix.arch }}.dmg
+          codesign --verify --verbose=2 dist/king-dsh-mac-${{ matrix.arch }}.dmg
+          spctl --assess --type open --context context:primary-signature --verbose=4 dist/king-dsh-mac-${{ matrix.arch }}.dmg
+          xcrun stapler validate dist/king-dsh-mac-${{ matrix.arch }}.dmg
       - uses: actions/upload-artifact@v4
         if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && (inputs.mode == 'signed' || inputs.mode == 'prerelease'))
         with:
           name: ${{ matrix.artifact }}
           retention-days: 7
           path: |
-            dist/dsh-desktop-mac-${{ matrix.arch }}.dmg
-            dist/dsh-desktop-mac-${{ matrix.arch }}.zip
-            dist/dsh-desktop-mac-${{ matrix.arch }}.zip.blockmap
+            dist/king-dsh-mac-${{ matrix.arch }}.dmg
+            dist/king-dsh-mac-${{ matrix.arch }}.zip
+            dist/king-dsh-mac-${{ matrix.arch }}.zip.blockmap
             dist/latest-mac-${{ matrix.arch }}.yml
           compression-level: 0
           if-no-files-found: error
@@ -283,9 +283,9 @@ jobs:
           name: ${{ matrix.artifact }}-dev
           retention-days: 3
           path: |
-            dist-dev/dsh-desktop-dev-mac-${{ matrix.arch }}.dmg
-            dist-dev/dsh-desktop-dev-mac-${{ matrix.arch }}.zip
-            dist-dev/dsh-desktop-dev-mac-${{ matrix.arch }}.zip.blockmap
+            dist-dev/king-dsh-dev-mac-${{ matrix.arch }}.dmg
+            dist-dev/king-dsh-dev-mac-${{ matrix.arch }}.zip
+            dist-dev/king-dsh-dev-mac-${{ matrix.arch }}.zip.blockmap
           compression-level: 0
           if-no-files-found: error
 
@@ -348,8 +348,8 @@ jobs:
         if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
         shell: pwsh
         env:
-          SMOKE_EXE: ${{ (startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && (inputs.mode == 'signed' || inputs.mode == 'prerelease'))) && 'dist\win-unpacked\DSH Desktop.exe' || 'dist-dev\win-unpacked\DSH Desktop Dev.exe' }}
-          SMOKE_USERDATA: ${{ (startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && (inputs.mode == 'signed' || inputs.mode == 'prerelease'))) && 'dsh-desktop' || 'dsh-desktop-dev' }}
+          SMOKE_EXE: ${{ (startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && (inputs.mode == 'signed' || inputs.mode == 'prerelease'))) && 'dist\win-unpacked\king-dsh.exe' || 'dist-dev\win-unpacked\king-dsh.exe' }}
+          SMOKE_USERDATA: ${{ (startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && (inputs.mode == 'signed' || inputs.mode == 'prerelease'))) && 'king-dsh' || 'king-dsh-dev' }}
         run: |
           $userData = Join-Path $env:APPDATA $env:SMOKE_USERDATA
           $logPath = Join-Path $userData 'logs\harness.log'
@@ -497,9 +497,9 @@ jobs:
         with:
           name: windows-x64-unsigned
           path: |
-            dist/dsh-desktop-windows-x64-setup.exe
+            dist/king-dsh-windows-x64-setup.exe
             dist/win-unpacked.tar.gz
-            dist/dsh-desktop-windows-x64-setup.exe.blockmap
+            dist/king-dsh-windows-x64-setup.exe.blockmap
             dist/latest.yml
           compression-level: 0
           if-no-files-found: error
@@ -510,8 +510,8 @@ jobs:
           name: windows-x64-dev
           retention-days: 3
           path: |
-            dist-dev/dsh-desktop-dev-windows-x64-setup.exe
-            dist-dev/dsh-desktop-dev-windows-x64-setup.exe.blockmap
+            dist-dev/king-dsh-dev-windows-x64-setup.exe
+            dist-dev/king-dsh-dev-windows-x64-setup.exe.blockmap
             dist-dev/latest.yml
           compression-level: 0
           if-no-files-found: error
@@ -664,8 +664,8 @@ jobs:
           name: windows-x64
           retention-days: 7
           path: |
-            ${{ runner.temp }}/dsh-windows-${{ github.run_id }}/release/dsh-desktop-windows-x64-setup.exe
-            ${{ runner.temp }}/dsh-windows-${{ github.run_id }}/release/dsh-desktop-windows-x64-setup.exe.blockmap
+            ${{ runner.temp }}/dsh-windows-${{ github.run_id }}/release/king-dsh-windows-x64-setup.exe
+            ${{ runner.temp }}/dsh-windows-${{ github.run_id }}/release/king-dsh-windows-x64-setup.exe.blockmap
             ${{ runner.temp }}/dsh-windows-${{ github.run_id }}/release/latest.yml
           compression-level: 0
           if-no-files-found: error
@@ -693,7 +693,7 @@ jobs:
         shell: pwsh
         run: |
           ./scripts/smoke-signed-windows-installer.ps1 `
-            -Installer 'signed-windows/dsh-desktop-windows-x64-setup.exe' `
+            -Installer 'signed-windows/king-dsh-windows-x64-setup.exe' `
             -PublisherName 'Beijing Shuju Xiangsu Intelligence Technology Co., Ltd.'
 
   smoke-existing-signed-windows:
@@ -716,7 +716,7 @@ jobs:
         shell: pwsh
         run: |
           ./scripts/smoke-signed-windows-installer.ps1 `
-            -Installer 'signed-windows/dsh-desktop-windows-x64-setup.exe' `
+            -Installer 'signed-windows/king-dsh-windows-x64-setup.exe' `
             -PublisherName 'Beijing Shuju Xiangsu Intelligence Technology Co., Ltd.'
 
   publish-signed-test:

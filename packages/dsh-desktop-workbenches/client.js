@@ -1643,24 +1643,24 @@ window.__ModuleLoader__.load({
         document.body)
     }
     function developmentWorkbenchAgentPrompt(english = isEnglish()) {
-      if (english) return `I want to build and use a DSH Desktop workbench locally, without uploading or submitting it. This generic instruction does not contain business requirements; do not choose a workbench concept from it. You may use your own development process; DSH does not control that process.
+      if (english) return `I want to build and use a king-dsh workbench locally, without uploading or submitting it. This generic instruction does not contain business requirements; do not choose a workbench concept from it. You may use your own development process; DSH does not control that process.
 
 ${DEVELOPMENT_EN_READING} First inspect the business scenario, target users, and core flow for one task that I explicitly stated in this conversation. You may inspect the project directory, existing documentation, and uncommitted changes read-only, but a directory name, example, or existing code does not itself establish my intent. If any of the three requirements is unclear, ask me only one combined question: “Who is this workbench for, what business scenario should it address, and what are the core steps from entry to task completion?” Wait for my answer. Before then, do not create or change business code, UI, or package files, and do not build, pack, install, or submit. With an empty directory and no business goal, stop after asking.
 
 Once requirements are clear, define the smallest business flow and preserve existing uncommitted changes. Implement the package format in Section 3 (the package.json dsh fields, cordis.patch.yml, server and client entries), workbench behavior, and UI; run relevant tests and builds. If scripts/check-workbench-package.mjs exists, use it to verify the package.
 
-Then install the workbench in this DSH Desktop using an installation method actually supported by this version; do not ask me to re-enter project information. Follow the Section 8 local self-test checklist, confirm the entry under “Installed workbenches” and in the sidebar, and actually open and use it.
+Then install the workbench in this king-dsh using an installation method actually supported by this version; do not ask me to re-enter project information. Follow the Section 8 local self-test checklist, confirm the entry under “Installed workbenches” and in the sidebar, and actually open and use it.
 
 If this Desktop version has no supported local installation method, or you cannot operate it, keep the verified package and precisely state which steps remain; do not claim it loaded. Finally report changed files, self-test results, actual loading state, and unverified items.`
-      return `我想在本机制作和使用一个 DSH Desktop 工作台，不需要上传或投稿。这条通用指令没有提供业务需求，不能据此直接决定做什么工作台。你可以使用自己的开发流程，DSH 不控制开发过程。
+      return `我想在本机制作和使用一个 king-dsh 工作台，不需要上传或投稿。这条通用指令没有提供业务需求，不能据此直接决定做什么工作台。你可以使用自己的开发流程，DSH 不控制开发过程。
 
 ${DEVELOPMENT_GUIDE_READING}首先检查我在当前对话中明确提出的业务场景、目标用户和一次任务的核心流程；可以只读检查项目目录、已有说明和未提交更改，但不能把目录名、示例或现有代码自行当成我已确认的开发意图。任一项不明确时，先只问我一个合并问题：“这个工作台要服务谁、解决什么业务场景？用户从进入到完成任务的核心步骤是什么？”等待我回答。答复前不要创建或修改业务代码、界面或包文件，也不要构建、打包、安装或投稿。空目录且没有业务目标时，到提问为止。
 
 需求明确后，确定最小业务流程，不要覆盖已有的未提交更改。再按规范第 3 节完成包格式（package.json 的 dsh 字段、cordis.patch.yml、服务端和客户端入口），实现工作台功能和界面，运行相关测试与构建；若存在 scripts/check-workbench-package.mjs，用它校验工作台包。
 
-完成后，按当前可用的插件安装方式把工作台装到我这台 DSH Desktop，不要让我重新填写项目信息。然后按规范第 8 节“本地自测清单”逐项检查，确认它出现在「已安装的工作台」和左侧入口，并实际打开使用。
+完成后，按当前可用的插件安装方式把工作台装到我这台 king-dsh，不要让我重新填写项目信息。然后按规范第 8 节“本地自测清单”逐项检查，确认它出现在「已安装的工作台」和左侧入口，并实际打开使用。
 
-若当前版本没有可用的本地安装方式，或你不能操作这台 DSH Desktop，请保留经过校验的包，准确说明缺少的步骤，不要声称已加载。最后告诉我修改的文件、自测结果、实际加载状态和未验证的项目。`
+若当前版本没有可用的本地安装方式，或你不能操作这台 king-dsh，请保留经过校验的包，准确说明缺少的步骤，不要声称已加载。最后告诉我修改的文件、自测结果、实际加载状态和未验证的项目。`
     }
     // One line, no Markdown or YAML syntax: the text lands in a prompt and a PR body.
     const categorySuggestion = (value) => String(value || '').replace(/[\r\n`"'<>{}\[\]]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 20)
@@ -1675,14 +1675,14 @@ ${DEVELOPMENT_GUIDE_READING}首先检查我在当前对话中明确提出的业�
       return `Set category to ${category.id} (${category.names?.en || category.name}); the author selected it, so do not replace it. ${wanted ? `In the PR description, suggest a new category: ${wanted}. Market maintainers decide whether to add it.` : ''}`
     }
     function submissionWorkbenchAgentPrompt({ category, suggestion, english = isEnglish() } = {}) {
-      if (english) return `I want to submit an existing DSH Desktop workbench to the public Workbench Market. First verify its project, final installable version, real local installation and testing, and a repository I am authorized to publish. This generic instruction does not imply those prerequisites are done. If project or acceptance evidence is missing, explain and perform the checks you can; do not invent verification or submit prematurely.
+      if (english) return `I want to submit an existing king-dsh workbench to the public Workbench Market. First verify its project, final installable version, real local installation and testing, and a repository I am authorized to publish. This generic instruction does not imply those prerequisites are done. If project or acceptance evidence is missing, explain and perform the checks you can; do not invent verification or submit prematurely.
 
 ${ACCEPTANCE_EN_READING} Confirm the repository and content to publish. Do not expose credentials, business data, or unauthorized private code. Once submission prerequisites and publication scope are confirmed, follow the standard's listing process: commit code to my own public GitHub repository and choose the source-only, GitHub Release, or npm path based on an actual installable source. Read real project scripts and tool help before running commands; do not invent release commands.
 
 Then submit one PR to ${WORKBENCH_MARKET_REPO}, adding only data/workbenches/<owner>__<repo>.yml. Follow its catalog/README.md: url, name, category, description.zh, and description.en are required; screenshots contains 1–5 genuine image URLs in my repository; tarball may be specified for a Release package. ${englishCategoryInstruction(category, suggestion)} Do not fill in version, npm package name, or checksum, or edit generated files. Use GitHub web or gh only as already authorized. If login or authorization to publish is missing, finish the safe preparation and state precisely what is needed.
 
 Before submitting, verify every item in Section 6's acceptance checklist. The PR begins review; local submission status is not saved. Say “submitted” only with a real PR URL. Say “listed” only after merge and after the market catalog contains the entry. Finally report the release URL, PR URL, catalog visibility, acceptance evidence, and remaining work.`
-      return `我想将已有的 DSH Desktop 工作台投稿到公共工作台市场。请先核实工作台项目、最终可安装版本、本机安装实测结果和我有权公开的仓库；这条通用指令不代表这些前提已经完成。若项目或验收证据缺失，先说明并完成能做的检查，不要凭空声称已验证或直接提交。
+      return `我想将已有的 king-dsh 工作台投稿到公共工作台市场。请先核实工作台项目、最终可安装版本、本机安装实测结果和我有权公开的仓库；这条通用指令不代表这些前提已经完成。若项目或验收证据缺失，先说明并完成能做的检查，不要凭空声称已验证或直接提交。
 
 ${ACCEPTANCE_READING}先确认要公开的仓库和内容，不得公开密钥、业务数据或未经授权的私有代码。确认投稿前提和公开范围后，按规范的上架流程，把代码提交到我自己的公开 GitHub 仓库，并根据项目已有的可安装来源选择仅源码、GitHub Release 或 npm 路径。先读取项目真实脚本和工具帮助，不要编造发布命令。
 

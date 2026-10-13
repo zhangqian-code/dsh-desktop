@@ -1,6 +1,6 @@
 # Workbench Market Acceptance Standard
 
-Version: 2026-09-29 · The website is authoritative; DSH Desktop bundles a copy for offline use.
+Version: 2026-09-29 · The website is authoritative; king-dsh bundles a copy for offline use.
 
 Official page: https://dshdesktop.com/workbench/docs/market-acceptance-en/
 
@@ -18,7 +18,7 @@ Rule levels are **required** (failure prevents listing or installation), **recom
 
 - A market submission is a separate user intent. Generic development instructions, discovery of an existing workbench, or completion of local development do not authorize publication or submission. Without an explicit listing request, stop at local delivery. If the development goal is unclear, use the requirements confirmation gate in the Development Standard first.
 - **Required**: Meet every required item in the Development Standard and pass its local self-test checklist.
-- **Required**: Install and actually open the workbench in a real DSH Desktop. Record the tested Desktop version, OS, and architecture. Do not claim compatibility with untested platforms.
+- **Required**: Install and actually open the workbench in a real king-dsh. Record the tested Desktop version, OS, and architecture. Do not claim compatibility with untested platforms.
 - Before submitting, check the actual evidence: final installation source and version, package verification, Desktop installation and opening records, self-test results, and corresponding screenshots. Mark unsupported claims “unverified” and complete verification first. An agent plan, successful build, or expectation that a package should install is not evidence of acceptance and must not be used to submit a public PR as “passed.”
 
 ## 2. Listing process

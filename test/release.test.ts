@@ -7,9 +7,9 @@ import { describe, expect, it } from 'vitest'
 const projectRoot = path.resolve(import.meta.dirname, '..')
 
 const releaseAssets = [
-  'dsh-desktop-mac-arm64.dmg',
-  'dsh-desktop-mac-x64.dmg',
-  'dsh-desktop-windows-x64-setup.exe'
+  'king-dsh-mac-arm64.dmg',
+  'king-dsh-mac-x64.dmg',
+  'king-dsh-windows-x64-setup.exe'
 ]
 
 /** The exact Harness build every `@deepseek-ai/dsh-*` production dep is pinned to. */
@@ -175,7 +175,7 @@ describe('GitHub release contract', () => {
       'utf8'
     )
 
-    expect(packageJson.build.artifactName).toBe('dsh-desktop-${os}-${arch}.${ext}')
+    expect(packageJson.build.artifactName).toBe('king-dsh-${os}-${arch}.${ext}')
     expect(packageJson.build.asar).toBe(true)
     // JavaScript stays in app.asar; only files the OS loads or executes unpack.
     expect(packageJson.build.asarUnpack).not.toContain('node_modules/**/*')
@@ -236,7 +236,7 @@ describe('GitHub release contract', () => {
       to: 'web-import.html'
     })
     expect(packageJson.build.nsis.artifactName).toBe(
-      'dsh-desktop-windows-${arch}-setup.${ext}'
+      'king-dsh-windows-${arch}-setup.${ext}'
     )
     expect(packageJson.build.nsis.include).toBe('build/installer.nsh')
     expect(packageJson.build.win.target).toEqual([{ target: 'nsis', arch: ['x64'] }])
@@ -281,8 +281,8 @@ describe('GitHub release contract', () => {
       'latest-mac-x64.yml',
       'latest-mac.yml',
       'latest.yml',
-      'dsh-desktop-mac-${{ matrix.arch }}.zip.blockmap',
-      'dsh-desktop-windows-x64-setup.exe.blockmap'
+      'king-dsh-mac-${{ matrix.arch }}.zip.blockmap',
+      'king-dsh-windows-x64-setup.exe.blockmap'
     ]) {
       expect(workflow).toContain(asset)
     }
@@ -315,8 +315,10 @@ describe('GitHub release contract', () => {
       build: { nsis: { allowToChangeInstallationDirectory: boolean } }
     }
     const workflow = await readFile(path.join(projectRoot, '.github', 'workflows', 'release.yml'), 'utf8')
-    expect(packageJson.scripts['package:win']).toContain('electron-builder-windows.mjs')
-    expect(packageJson.scripts['package:dev:win']).toContain('electron-builder-windows.mjs')
+    const packageWrapper = await readFile(path.join(projectRoot, 'scripts', 'package-desktop.mjs'), 'utf8')
+    expect(packageJson.scripts['package:win']).toContain('package-desktop.mjs')
+    expect(packageJson.scripts['package:dev:win']).toContain('package-desktop.mjs')
+    expect(packageWrapper).toContain('scripts/electron-builder-windows.mjs')
     expect(packageJson.build.nsis.allowToChangeInstallationDirectory).toBe(true)
     expect(workflow).toContain('node scripts/electron-builder-windows.mjs --win --x64 --publish never')
   })
@@ -333,22 +335,23 @@ describe('GitHub release contract', () => {
       artifactName: string
       nsis: { artifactName: string }
     }
+    const packageWrapper = await readFile(path.join(projectRoot, 'scripts', 'package-desktop.mjs'), 'utf8')
 
+    expect(packageJson.scripts['package:local']).toContain('package-desktop.mjs')
+    expect(packageJson.scripts['package:local:install']).toContain('--install --launch')
     expect(packageJson.scripts['package:dev:dir']).toContain('npm run build')
     expect(packageJson.scripts['package:dev:dir']).toContain('electron-builder.dev.cjs')
-    expect(packageJson.scripts['package:dev:mac:arm64']).toContain('verify-target.mjs darwin arm64')
-    expect(packageJson.scripts['package:dev:mac:arm64']).toContain('electron-builder.dev.cjs')
-    expect(packageJson.scripts['package:dev:mac:x64']).toContain('verify-target.mjs darwin x64')
-    expect(packageJson.scripts['package:dev:mac:x64']).toContain('electron-builder.dev.cjs')
-    expect(packageJson.scripts['package:dev:win']).toContain('verify-target.mjs win32 x64')
-    expect(packageJson.scripts['package:dev:win']).toContain('electron-builder.dev.cjs')
+    expect(packageJson.scripts['package:dev:mac:arm64']).toContain('--platform darwin --arch arm64')
+    expect(packageJson.scripts['package:dev:mac:x64']).toContain('--platform darwin --arch x64')
+    expect(packageJson.scripts['package:dev:win']).toContain('--platform win32 --arch x64')
     expect(packageJson.scripts['package:dev:win']).toContain('--publish never')
-    expect(developmentConfig.appId).toBe('io.dsh.desktop.dev')
-    expect(developmentConfig.productName).toBe('DSH Desktop Dev')
+    expect(packageWrapper).toContain("builderArgs.push('--config', 'electron-builder.dev.cjs')")
+    expect(developmentConfig.appId).toBe('com.king.dsh.dev')
+    expect(developmentConfig.productName).toBe('king-dsh')
     expect(developmentConfig.directories.output).toBe('dist-dev')
     expect(developmentConfig.extraMetadata.dshDesktopChannel).toBe('development')
-    expect(developmentConfig.artifactName).toBe('dsh-desktop-dev-${os}-${arch}.${ext}')
-    expect(developmentConfig.nsis.artifactName).toBe('dsh-desktop-dev-windows-${arch}-setup.${ext}')
+    expect(developmentConfig.artifactName).toBe('king-dsh-dev-${os}-${arch}.${ext}')
+    expect(developmentConfig.nsis.artifactName).toBe('king-dsh-dev-windows-${arch}-setup.${ext}')
   })
 
   it('builds and publishes every supported platform', async () => {
@@ -367,7 +370,7 @@ describe('GitHub release contract', () => {
     expect(workflow).toContain('$executable = Join-Path $isolatedApp $sourceExecutable.Name')
     expect(workflow).toContain('-WorkingDirectory $isolatedApp')
     expect(workflow).toContain('Packaged koffi native binding failed (exit code $koffiExitCode).')
-    expect(workflow).toContain("'dist-dev\\win-unpacked\\DSH Desktop Dev.exe'")
+    expect(workflow).toContain("'dist-dev\\win-unpacked\\king-dsh.exe'")
     expect(workflow).toContain('if (-not [string]::IsNullOrEmpty($log))')
     expect(workflow).toContain("dsh web: (http://127\\.0\\.0\\.1:\\d+/\\?token=[^\\s]+)")
     expect(workflow).toContain('-SessionVariable harnessSession')
@@ -382,9 +385,9 @@ describe('GitHub release contract', () => {
     expect(workflow).toContain('mode:')
     expect(workflow).toContain('--prerelease')
     expect(workflow).toContain('name: windows-x64-dev')
-    expect(workflow).toContain('dist-dev/dsh-desktop-dev-windows-x64-setup.exe')
-    expect(workflow).toContain('dsh-desktop-mac-${{ matrix.arch }}.dmg')
-    expect(workflow).toContain('dsh-desktop-windows-x64-setup.exe')
+    expect(workflow).toContain('dist-dev/king-dsh-dev-windows-x64-setup.exe')
+    expect(workflow).toContain('king-dsh-mac-${{ matrix.arch }}.dmg')
+    expect(workflow).toContain('king-dsh-windows-x64-setup.exe')
     expect(
       workflow.match(
         /npm version --no-git-tag-version --allow-same-version "\$\{\{ github\.ref_name \}\}"/g
@@ -494,24 +497,15 @@ describe('GitHub release contract', () => {
     expect(installer).not.toMatch(/Add-MpPreference|HKLM|ExecShell\s+"runas"/)
   })
 
-  it('routes stable downloads through the website and previews through GitHub', async () => {
-    const readmes = await Promise.all(
-      ['README.md', 'README.zh.md', 'README.ja.md', 'README.ru.md', 'README.es.md', 'README.pt.md'].map((file) =>
-        readFile(path.join(projectRoot, file), 'utf8')
-      )
-    )
-
-    for (const readme of readmes) {
-      expect(readme).toMatch(/https:\/\/(?:www\.)?dshdesktop\.com\/(?:#download|zh\/)/)
-      expect(readme).not.toContain('| Platform | Package | Download |')
-      expect(readme).not.toContain('| 平台 | 安装包 | 下载 |')
-      expect(readme).not.toContain('Coming soon')
-      expect(readme).not.toContain('即将发布')
-      expect(readme).toContain('https://github.com/dataelement/dsh-desktop/releases')
-      expect(readme).toContain('**Pre-release**')
-      for (const asset of releaseAssets) {
-        expect(readme).not.toContain(`releases/latest/download/${asset}`)
-      }
+  it('documents downstream local packaging and upstream provenance', async () => {
+    const readme = await readFile(path.join(projectRoot, 'README.md'), 'utf8')
+    expect(readme).toContain('king-dsh')
+    expect(readme).toContain('npm run package:local')
+    expect(readme).toContain('npm run package:local:install')
+    expect(readme).toContain('https://github.com/dataelement/dsh-desktop')
+    expect(readme).toContain('upstream-sync workflow')
+    for (const asset of releaseAssets) {
+      expect(readme).not.toContain(`releases/latest/download/${asset}`)
     }
   })
 })

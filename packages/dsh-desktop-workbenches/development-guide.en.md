@@ -1,6 +1,6 @@
 # Workbench Development Standard
 
-Version: 2026-09-29 · The website is authoritative; DSH Desktop bundles a copy for offline use.
+Version: 2026-09-29 · The website is authoritative; king-dsh bundles a copy for offline use.
 
 Official page: https://dshdesktop.com/workbench/docs/development-en/
 
@@ -8,7 +8,7 @@ Markdown source for agents: https://dshdesktop.com/workbench/docs/development-en
 
 Six-step quickstart: https://dshdesktop.com/workbench/docs/quickstart-en/ ([Markdown](https://dshdesktop.com/workbench/docs/quickstart-en.md)). [中文版](https://dshdesktop.com/workbench/docs/development/).
 
-This standard is intended for direct execution by an AI developing a workbench. **For local development and personal use, this document is sufficient**: build the package under Section 3, install it in the local DSH Desktop, and pass the Section 8 self-test. There is no requirement to publish code or upload anything.
+This standard is intended for direct execution by an AI developing a workbench. **For local development and personal use, this document is sufficient**: build the package under Section 3, install it in the local king-dsh, and pass the Section 8 self-test. There is no requirement to publish code or upload anything.
 
 If the author later wants to list the workbench in the Workbench Market, also read the [Workbench Market Acceptance Standard](https://dshdesktop.com/workbench/docs/market-acceptance-en/). Its separate rules cover a public repository, releases, descriptions, screenshots, and listing PRs.
 
@@ -176,7 +176,7 @@ On macOS, after the sidebar collapses, window controls and the sidebar expansion
 ## 5. Workbenches, sessions, and workspaces
 
 - One workbench may have many sessions; each session belongs to at most one workbench.
-- A workspace is a DSH Desktop project-file environment. A session bound to a workspace has at most one workspace. Different sessions in the same workspace may belong to different workbenches.
+- A workspace is a king-dsh project-file environment. A session bound to a workspace has at most one workspace. Different sessions in the same workspace may belong to different workbenches.
 - One workbench can use multiple workspaces, and different workbenches can use the same workspace.
 - Internal business records or projects are not DSH workspaces and need no duplicate binding. For example, metaphysics records and location-selection projects retain their own create/select flows. A DSH workspace directory is a user-chosen file location; opening or creating a business project does not automatically assign it to a workbench.
 

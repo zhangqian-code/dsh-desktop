@@ -1,6 +1,6 @@
 <h1 align="center">
-  <img src="docs/images/readme-logo-black-rounded.svg" width="64" alt="DSH Desktop logo" valign="middle" />
-  DSH Desktop
+  <img src="build/app-icon.png" width="64" alt="king-dsh logo" valign="middle" />
+  king-dsh
 </h1>
 
 <p align="center">
@@ -18,22 +18,18 @@
   <img alt="Windows" src="https://img.shields.io/badge/Windows-x64-171513.svg" />
 </p>
 
-![DSH Desktop overview with portable presets, model providers, phone control, and editable PPT generation](docs/images/dsh-desktop-hero-v021.png)
+![king-dsh overview with portable presets, model providers, phone control, and editable PPT generation](docs/images/dsh-desktop-hero-v021.png)
 
 <p align="center"><strong>Use official DeepSeek models or mainstream third-party providers, manage portable Agent presets, continue Harness sessions from your phone, and turn source material into editable PPTX decks.</strong></p>
 
-DSH Desktop packages the local DeepSeek Harness experience as an installed desktop application. It starts Harness automatically, keeps profiles, plugins, workspaces, model settings, and sessions outside the application directory, and opens the full Harness interface as soon as the local runtime is ready.
+king-dsh is a downstream customization of [DSH Desktop](https://github.com/dataelement/dsh-desktop) that packages the local DeepSeek Harness experience as an installed desktop application. It keeps a separate application identity and data directory so it can coexist with the upstream app.
 
 > [!IMPORTANT]
-> DSH Desktop is an early preview built on the rapidly evolving `@deepseek-ai/dsh@0.2.0-rc.2`. macOS releases are code-signed and notarized by Apple. Windows x64 installers are code-signed; Windows security warnings may still decrease gradually as the publisher builds download and installation reputation.
+> king-dsh is an early preview built on the rapidly evolving `@deepseek-ai/dsh@0.2.0-rc.2`. Local packages are unsigned development builds unless you configure your own signing identity.
 
-## Download
+## Local package
 
-We offer stable and preview releases: download the **stable release**, recommended for everyday use, from our [official website](https://www.dshdesktop.com/#download). To try a **preview release**, choose a version marked **Pre-release** on [GitHub Releases](https://github.com/dataelement/dsh-desktop/releases).
-
-Preview releases include our newest features and closely track the latest official DeepSeek Harness versions. They may be incompatible with community plugins and are **not recommended for general users**. Early adopters are welcome to try them and share feedback in our community; we roll out updates to the wider community only after validation by early adopters.
-
-Installed builds check for updates shortly after startup and every six hours. When a new version is available, DSH Desktop asks before downloading it; installation begins only after you choose **Restart and install**. You can also check manually from the application menu or skip one version without hiding future releases.
+Run `npm run package:local` to build an unsigned development installer for the current machine. On macOS, `npm run package:local:install` also preserves the installed app as a timestamped backup, installs the new package, and launches it. The wrapper auto-detects the optional local proxy at `127.0.0.1:7890`; use `npm run package:local -- --network direct` to bypass it. Explicit target commands such as `package:dev:mac:arm64`, `package:dev:mac:x64`, and `package:dev:win` remain available. Development packages disable the official updater; upstream changes are integrated through the repository's upstream-sync workflow before rebuilding.
 
 ## Community
 
@@ -43,9 +39,9 @@ Installed builds check for updates shortly after startup and every six hours. Wh
   Prefer Discord? <a href="https://discord.gg/7Xgf3qe3Qp">Join the DSH Desktop Discord community</a>.
 </p>
 
-## What DSH Desktop adds
+## What king-dsh adds
 
-DeepSeek Harness already provides the Agent runtime and Web UI. DSH Desktop adds the native host capabilities needed for a practical desktop product:
+DeepSeek Harness already provides the Agent runtime and Web UI. king-dsh carries the DSH Desktop host capabilities plus downstream branding and customization:
 
 - Starts and stops Harness without requiring a separate CLI or browser tab
 - Uses the native system directory picker to add and manage project workspaces
@@ -79,16 +75,16 @@ If Cloudflare fails to start, the app tries Pinggy. If a Cloudflare pairing link
 
 ## Safe Mode and recovery
 
-If a third-party plugin interferes with startup or rendering, DSH Desktop can identify the implicated plugin from runtime and frontend evidence and open a guided recovery surface.
+If a third-party plugin interferes with startup or rendering, king-dsh can identify the implicated plugin from runtime and frontend evidence and open a guided recovery surface.
 
 Choose **Restart as Safe Mode…** from the `Harness` menu to start an isolated profile containing only official core bundles. The Agent, sessions, model settings, and workspaces remain available while third-party plugins from the normal profile stay blocked. You can remove selected plugins or return to a normal launch from the Safe Mode banner.
 
 Recovery screens check for compatible plugin updates. When available, you can upgrade an affected plugin; Safe Mode also offers batch upgrades. For help, hover over **WeChat group** to display its QR code, or click **Discord** to open the community.
 
-If the normal interface cannot be reached, start DSH Desktop with `--safe-mode`. On macOS:
+If the normal interface cannot be reached, start king-dsh with `--safe-mode`. On macOS:
 
 ```sh
-open -a "DSH Desktop" --args --safe-mode
+open -a "king-dsh" --args --safe-mode
 ```
 
 ## Local data and security
@@ -129,6 +125,6 @@ Before submitting a change, run `npm test`, `npm run typecheck`, and `npm run bu
 
 ## License
 
-DSH Desktop is open source under the [MIT License](LICENSE).
+king-dsh is open source under the [MIT License](LICENSE).
 
-DeepSeek Harness and its dependencies remain subject to their respective upstream licenses and trademark policies. DSH Desktop is an independent community desktop application.
+DeepSeek Harness, DSH Desktop, and their dependencies remain subject to their respective upstream licenses and trademark policies.

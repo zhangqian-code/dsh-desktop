@@ -10,8 +10,8 @@ interface Registration {
   component: (props: Record<string, unknown>) => unknown
 }
 
-describe('DSH Desktop client slot occupants', () => {
-  it('registers one occupant per brand seat and keeps the official name mark-free', async () => {
+describe('king-dsh client slot occupants', () => {
+  it('registers the downstream name, mark and localized new-session copy', async () => {
     const source = await readFile(
       path.join(projectRoot, 'packages', 'dsh-desktop-client-ui', 'client.js'),
       'utf8'
@@ -24,6 +24,12 @@ describe('DSH Desktop client slot occupants', () => {
     } | undefined
     const appended: Array<{ textContent?: string }> = []
     const removeStyle = vi.fn()
+    const removeLocale = vi.fn()
+    const localeRegister = vi.fn(() => removeLocale)
+    const translate = (key: string): string => ({
+      heroTitle: 'What will you accomplish today?',
+      heroHint: 'Describe the goal, choose a workspace and mode, then begin.'
+    })[key] ?? key
     let disposeStyle: (() => void) | undefined
     const document = {
       getElementById: vi.fn(() => null),
@@ -51,8 +57,6 @@ describe('DSH Desktop client slot occupants', () => {
       type,
       props: { ...props, children }
     })
-    const BrandWordmark = vi.fn()
-    const FishLogo = vi.fn()
     const plugin = definition!.factory((id) => {
       if (id === 'react') {
         return {
@@ -62,7 +66,7 @@ describe('DSH Desktop client slot occupants', () => {
         }
       }
       if (id === '@deepseek-ai/dsh-client-ui-primitives') {
-        return { BrandWordmark, FishLogo }
+        return { MenuItemButton: vi.fn() }
       }
       throw new Error(`Unexpected client dependency: ${id}`)
     })
@@ -84,44 +88,75 @@ describe('DSH Desktop client slot occupants', () => {
         return () => undefined
       }
     }
-    plugin.apply({ slots, effect: (setup: () => (() => void) | undefined) => { disposeStyle = setup() } })
+    plugin.apply({
+      slots,
+      locale: { register: localeRegister, bind: () => translate },
+      effect: (setup: () => (() => void) | undefined) => { disposeStyle = setup() }
+    })
 
-    expect(plugin.inject).toEqual(['slots', 'remote.session', 'sessions', 'uiWorkspace'])
+    expect(plugin.inject).toEqual(['slots', 'locale', 'remote.session', 'sessions', 'uiWorkspace'])
     expect(registrations.map(({ config }) => config.name)).toEqual([
       'sidebar.brand.mark',
       'sidebar.brand.name',
       'conversation.hero.brand.mark',
+      'conversation.hero.brand.content',
       'sidebar.right.tab.document.unpreviewable',
       'sidebar.workspaces.session.menu.item',
       'sidebar.workspaces.session.menu.item',
       'sidebar.workspaces.session.menu.item'
     ])
-    // Desktop toolbar styles have an owned lifetime; branding stays in currentColor.
+    // Desktop toolbar styles have an owned lifetime.
     expect(appended).toHaveLength(1)
+    expect(appended[0]?.textContent).toContain('.dshDesktopHeroCopy')
     expect(appended[0]?.textContent).toContain("[data-dsh-preset-search]")
+    expect(localeRegister).toHaveBeenCalledWith('dsh-desktop-client-ui', {
+      zh: {
+        heroTitle: '今天想完成什么？',
+        heroHint: '描述目标，选择工作区与模式，然后开始。'
+      },
+      en: {
+        heroTitle: 'What will you accomplish today?',
+        heroHint: 'Describe the goal, choose a workspace and mode, then begin.'
+      }
+    })
     disposeStyle?.()
     expect(removeStyle).toHaveBeenCalledOnce()
+    expect(removeLocale).toHaveBeenCalledOnce()
 
     const sidebarName = registrations.find(
       ({ config }) => config.name === 'sidebar.brand.name'
     )!.component({}) as { type: unknown; props: Record<string, unknown> }
-    expect(sidebarName.type).toBe(BrandWordmark)
-    expect(sidebarName.props.includeMark).toBe(false)
+    expect(sidebarName.type).toBe('span')
+    expect(sidebarName.props.children).toEqual(['king-dsh'])
 
     const sidebarMark = registrations.find(
       ({ config }) => config.name === 'sidebar.brand.mark'
     )!.component({ size: 24 }) as { type: unknown; props: Record<string, unknown> }
-    expect(sidebarMark.type).toBe('svg')
-    expect(sidebarMark.props.height).toBe(17)
-    const [markPath] = sidebarMark.props.children as Array<{ type: unknown; props: Record<string, unknown> }>
-    if (!markPath) throw new Error('Expected the sidebar brand SVG path')
-    expect(markPath.type).toBe('path')
-    expect(markPath.props.fill).toBe('currentColor')
+    expect(sidebarMark.type).toBe('img')
+    expect(sidebarMark.props.src).toBe('/dsh-desktop-logo-dark.png')
+    expect(sidebarMark.props.width).toBe(19)
+    expect(sidebarMark.props.height).toBe(19)
 
     const heroMark = registrations.find(
       ({ config }) => config.name === 'conversation.hero.brand.mark'
     )!.component({ size: 48 }) as { type: unknown; props: Record<string, unknown> }
-    expect(heroMark.type).toBe(FishLogo)
-    expect(heroMark.props.size).toBe(48)
+    expect(typeof heroMark.type).toBe('function')
+    const heroImage = (heroMark.type as (props: Record<string, unknown>) => unknown)(
+      heroMark.props
+    ) as { type: unknown; props: Record<string, unknown> }
+    expect(heroImage.type).toBe('img')
+    expect(heroImage.props.src).toBe('/dsh-desktop-logo-dark.png')
+    expect(heroImage.props.width).toBe(48)
+    expect(heroImage.props.height).toBe(48)
+
+    const heroCopy = registrations.find(
+      ({ config }) => config.name === 'conversation.hero.brand.content'
+    )!.component({ t: translate }) as { type: unknown; props: Record<string, unknown> }
+    expect(heroCopy.type).toBe('span')
+    const children = heroCopy.props.children as Array<{ props: { children: unknown[] } }>
+    expect(children.map((child) => child.props.children[0])).toEqual([
+      'What will you accomplish today?',
+      'Describe the goal, choose a workspace and mode, then begin.'
+    ])
   })
 })

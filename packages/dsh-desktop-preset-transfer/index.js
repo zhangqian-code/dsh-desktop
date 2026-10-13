@@ -7,7 +7,7 @@ import { migratePersonaPrefix } from './persona-prefix.js'
 const COMPOSITION_FILE = 'agent.cordis.yml'
 
 /**
- * Preset package export and import for DSH Desktop.
+ * Preset package export and import for king-dsh.
  *
  * These two routes used to live in a patch on `@deepseek-ai/dsh-host-apiproxy`,
  * which 0.1.2-alpha.1 deleted. The 0.1.7 registry exposes list, resolve,

@@ -1,7 +1,7 @@
 {
   "name": "dsh-desktop-workbenches",
   "version": "0.1.0",
-  "description": "Awesome workbench catalog, pinned navigation and native conversation frame for DSH Desktop.",
+  "description": "Awesome workbench catalog, pinned navigation and native conversation frame for king-dsh.",
   "private": true,
   "type": "module",
   "main": "./index.js",

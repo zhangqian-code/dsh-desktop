@@ -81,6 +81,12 @@ When upgrading Harness:
 Harness includes architecture-specific native dependencies. Build each installer on the operating system and architecture where it will run.
 
 ```bash
+# Recommended local development package; detects the current platform and architecture
+npm run package:local
+
+# macOS only: package, back up the installed app, install, and launch
+npm run package:local:install
+
 # macOS Apple Silicon, on an Apple Silicon Mac or runner
 npm run package:mac:arm64
 
@@ -90,6 +96,8 @@ npm run package:mac:x64
 # Windows x64 NSIS installer, on a Windows x64 machine or runner
 npm run package:win
 ```
+
+The local wrapper centralizes target verification, the application build, `electron-builder`, unsigned-development settings, artifact reporting, and optional macOS installation. Its `auto` network mode uses `DSH_PACKAGE_PROXY` when set, otherwise uses existing proxy environment variables, otherwise probes `http://127.0.0.1:7890`; it never changes system proxy settings. Pass `--network direct` to bypass proxies or `--network inherit` to preserve the exact calling environment. Run `node scripts/package-desktop.mjs --help` for the complete option list. Existing explicit `package:dev:*` and production `package:*` commands delegate to the same wrapper.
 
 Do not invoke `electron-builder --win` from macOS or Linux for a distributable Windows package. The target verification scripts intentionally reject host/target mismatches.
 

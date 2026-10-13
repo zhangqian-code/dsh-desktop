@@ -1,5 +1,5 @@
 diff --git a/node_modules/@deepseek-ai/dsh-client-ui-conversation/lib/client.js b/node_modules/@deepseek-ai/dsh-client-ui-conversation/lib/client.js
-index 7f3f791..a03a091 100644
+index 7f3f791..9f47a74 100644
 --- a/node_modules/@deepseek-ai/dsh-client-ui-conversation/lib/client.js
 +++ b/node_modules/@deepseek-ai/dsh-client-ui-conversation/lib/client.js
 @@ -15795,12 +15795,13 @@ window.__ModuleLoader__.load({
@@ -25,6 +25,22 @@ index 7f3f791..a03a091 100644
  			"heroWorkspaceRow": "wSkVaW_heroWorkspaceRow",
  			"root": "wSkVaW_root",
  			"scrollBody": "wSkVaW_scrollBody",
+@@ -16185,13 +16187,13 @@ window.__ModuleLoader__.load({
+ 								size: 34,
+ 								className: HeroShell_module_css_default.fish
+ 							}, { fallback: (0, react_jsx_runtime.jsx)(HeroFish, { hovering }) })
+-						}), (0, react_jsx_runtime.jsxs)("span", {
++						}), renderSlot("conversation.hero.brand.content", {}, { fallback: (0, react_jsx_runtime.jsxs)("span", {
+ 							className: HeroShell_module_css_default.titleGroup,
+ 							children: [(0, react_jsx_runtime.jsx)("span", { children: t("hero.headline") }), (0, react_jsx_runtime.jsx)("span", {
+ 								className: HeroShell_module_css_default.previewBadge,
+ 								children: t("hero.preview")
+ 							})]
+-						})]
++						}) })]
+ 					}), (0, react_jsx_runtime.jsx)("div", { className: HeroShell_module_css_default.body })]
+ 				}), children]
+ 			});
 @@ -16280,12 +16282,17 @@ window.__ModuleLoader__.load({
  							setPickerOpen(false);
  						}
@@ -169,7 +185,18 @@ index 7f3f791..a03a091 100644
  							useProjection,
  							t
  						})]
-@@ -18179,6 +18198,14 @@ window.__ModuleLoader__.load({
+@@ -18172,6 +18191,10 @@ window.__ModuleLoader__.load({
+ 						kind: "single",
+ 						scope: "root"
+ 					},
++					"conversation.hero.brand.content": {
++						kind: "single",
++						scope: "root"
++					},
+ 					"conversation.hero.workspace": {
+ 						kind: "single",
+ 						scope: "root"
+@@ -18179,6 +18202,14 @@ window.__ModuleLoader__.load({
  					"conversation.hero.agentPreset": {
  						kind: "single",
  						scope: "session-maybe"
@@ -184,7 +211,7 @@ index 7f3f791..a03a091 100644
  					}
  				},
  				slots: {
-@@ -18302,6 +18329,10 @@ window.__ModuleLoader__.load({
+@@ -18302,6 +18333,10 @@ window.__ModuleLoader__.load({
  						kind: "list",
  						scope: "session"
  					},
@@ -195,7 +222,7 @@ index 7f3f791..a03a091 100644
  					"conversation.input.permission": {
  						kind: "single",
  						scope: "session"
-@@ -18338,6 +18369,7 @@ window.__ModuleLoader__.load({
+@@ -18338,6 +18373,7 @@ window.__ModuleLoader__.load({
  						removeAttachment: void 0,
  						resolveDraftAttachments: void 0,
  						retryFileUpload: void 0,
@@ -203,7 +230,7 @@ index 7f3f791..a03a091 100644
  						toggleCommandMenu: void 0,
  						stop: void 0,
  						hooks: {
-@@ -18404,6 +18436,11 @@ window.__ModuleLoader__.load({
+@@ -18404,6 +18440,11 @@ window.__ModuleLoader__.load({
  						retryFileUpload: (id) => {
  							if (sessions.binding(sessionId) !== void 0) conversation.retryFileUpload(sessionId, id);
  						},
@@ -215,7 +242,7 @@ index 7f3f791..a03a091 100644
  						toggleCommandMenu: inputTriggers === void 0 ? void 0 : (selection) => {
  							shell.dismissPopup();
  							const snapshot = shell.snapshot;
-@@ -18436,10 +18473,7 @@ window.__ModuleLoader__.load({
+@@ -18436,10 +18477,7 @@ window.__ModuleLoader__.load({
  				yield slots.register({
  					name: "main",
  					key: "conversation",
@@ -228,7 +255,7 @@ index 7f3f791..a03a091 100644
  				yield registerConversationRoot();
  				yield registerConversationContent();
 diff --git a/node_modules/@deepseek-ai/dsh-client-ui-conversation/lib/types/client/contract/slots.d.ts b/node_modules/@deepseek-ai/dsh-client-ui-conversation/lib/types/client/contract/slots.d.ts
-index 74f5846..66e825e 100644
+index 74f5846..eeafe13 100644
 --- a/node_modules/@deepseek-ai/dsh-client-ui-conversation/lib/types/client/contract/slots.d.ts
 +++ b/node_modules/@deepseek-ai/dsh-client-ui-conversation/lib/types/client/contract/slots.d.ts
 @@ -118,6 +118,12 @@ export type UseConversation = SnapshotSelectorHook<ConversationSnapshot>;
@@ -244,7 +271,19 @@ index 74f5846..66e825e 100644
          /** Conversation shell beneath its root-scoped main-panel entry. */
          'main.conversation': {
              kind: 'single';
-@@ -210,6 +216,18 @@ declare module '@deepseek-ai/dsh-client-ui-slots' {
+@@ -204,12 +210,30 @@ declare module '@deepseek-ai/dsh-client-ui-slots' {
+             scope: 'root';
+             owner: HeroBrandMarkOwnerProps;
+         };
++        /** Brand copy shown beside the blank-session mark. */
++        'conversation.hero.brand.content': {
++            kind: 'single';
++            scope: 'root';
++            owner: Record<never, never>;
++        };
+         /** Agent-preset control staged for a New Session. */
+         'conversation.hero.agentPreset': {
+             kind: 'single';
              scope: 'session-maybe';
              owner: HeroAgentPresetOwnerProps;
          };
@@ -263,7 +302,7 @@ index 74f5846..66e825e 100644
          /** Full-width entries above the composer card. */
          'conversation.input.dock': {
              kind: 'list';
-@@ -221,10 +239,17 @@ declare module '@deepseek-ai/dsh-client-ui-slots' {
+@@ -221,10 +245,17 @@ declare module '@deepseek-ai/dsh-client-ui-slots' {
              kind: 'list';
              scope: 'session';
          };
@@ -281,7 +320,18 @@ index 74f5846..66e825e 100644
          };
          /** Compact controls at the left of the composer tool row. */
          'conversation.input.left': {
-@@ -440,8 +465,10 @@ export interface ComposerBarOwnerProps {
+@@ -303,6 +334,10 @@ declare module '@deepseek-ai/dsh-client-ui-slots' {
+                     kind: 'single';
+                     scope: 'root';
+                 };
++                'conversation.hero.brand.content': {
++                    kind: 'single';
++                    scope: 'root';
++                };
+                 'conversation.hero.workspace': {
+                     kind: 'single';
+                     scope: 'root';
+@@ -440,8 +475,10 @@ export interface ComposerBarOwnerProps {
      /** Open the Workspace picker from the inert composer surface. */
      onRequestWorkspace?: () => void;
      placeholder?: string;
@@ -293,7 +343,7 @@ index 74f5846..66e825e 100644
  }
  /** Package-private operations injected into the resident composer bar. */
  export interface ComposerBarInjected {
-@@ -486,7 +513,7 @@ export interface InputActivityOwnerProps extends InputControlOwnerProps {
+@@ -486,7 +523,7 @@ export interface InputActivityOwnerProps extends InputControlOwnerProps {
      onActiveChange: (active: boolean) => void;
  }
  /** Full props of the resident composer bar. */
@@ -314,3 +364,16 @@ index 046ea88..aed438a 100644
 +export declare function ConversationPanel({ renderSlot }: PropsRuntime<'main'> & PropsRenderSlots<'main.conversation' | 'desktop.workbench.frame'>): import("react").ReactNode;
  //# sourceMappingURL=ConversationPanel.d.ts.map
 \ No newline at end of file
+diff --git a/node_modules/@deepseek-ai/dsh-client-ui-conversation/lib/types/client/skeleton/EmptyHero.d.ts b/node_modules/@deepseek-ai/dsh-client-ui-conversation/lib/types/client/skeleton/EmptyHero.d.ts
+index e01d472..5b28c77 100644
+--- a/node_modules/@deepseek-ai/dsh-client-ui-conversation/lib/types/client/skeleton/EmptyHero.d.ts
++++ b/node_modules/@deepseek-ai/dsh-client-ui-conversation/lib/types/client/skeleton/EmptyHero.d.ts
+@@ -31,7 +31,7 @@ export declare function WorkspaceChip({ buttonRef, label, menuOpen, onClick, t }
+ export interface HeroShellProps {
+     /** The owner's locale seat, passed down as a plain prop. */
+     t: HeroTranslate;
+-    /** Authorized renderer for the hero brand-mark slot. */
++    /** Authorized renderer for the hero brand mark and copy slots. */
+     renderSlot: ConversationContentProps['renderSlot'];
+     /** Overlay content after the stack (modals). */
+     children?: ReactNode;

@@ -6,35 +6,52 @@ window.__ModuleLoader__.load({
     Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' })
 
     const React = require('react')
-    const { BrandWordmark, FishLogo, MenuItemButton } = require('@deepseek-ai/dsh-client-ui-primitives')
+    const { MenuItemButton } = require('@deepseek-ai/dsh-client-ui-primitives')
+    const NS = 'dsh-desktop-client-ui'
+    const copy = {
+      zh: {
+        heroTitle: '今天想完成什么？',
+        heroHint: '描述目标，选择工作区与模式，然后开始。'
+      },
+      en: {
+        heroTitle: 'What will you accomplish today?',
+        heroHint: 'Describe the goal, choose a workspace and mode, then begin.'
+      }
+    }
 
-    // Tight bounds of the mark inside its 1000x1000 source artwork.
-    const BRAND_MARK_VIEWBOX = { x: 42, y: 218, width: 898, height: 564 }
-    // DSH Desktop whale mark: a window with a tail, drawn in currentColor so
-    // it follows the sidebar text color in both themes.
-    const BRAND_MARK_PATH = "M478.318 218C605.318 218 683.318 287 687.318 404L691.318 472C693.318 525 697.319 556 726.318 574C746.318 587 774.318 585 790.318 562C799.318 550 802.318 539 792.318 534C747.319 513 727.318 472 738.318 428C739.652 420 742.652 418.667 747.318 424C774.318 450 815.318 460 831.318 501C855.318 457 898.318 456 930.318 436C936.318 431.333 939.318 433.333 939.318 442C938.318 496 903.318 535 850.318 547C841.318 570 833.318 592 819.318 622C773.318 723 661.318 782 491.318 782H294.318C161.319 782 74.3183 714 53.3184 592C41.3184 526 38.3184 433 50.3184 375C70.3184 277 113.82 218 234.32 218H478.318ZM571.82 350.5C469.82 333.5 277.82 329.5 164.82 350.5C138.82 355.5 114.318 379 110.318 404C100.318 451 102.318 551 124.318 596C155.318 660 214.319 697 315.318 705C324.318 678 346.319 662 376.318 662C404.318 662 427.318 678 435.318 705C493.318 699 526.318 680 562.318 652C621.318 606 633.749 527.103 633.749 424C633.749 385.144 604.82 355.5 571.82 350.5ZM179.32 264C167.722 264 158.32 273.402 158.32 285C158.32 296.598 167.722 306 179.32 306C190.918 306 200.32 296.598 200.32 285C200.32 273.402 190.918 264 179.32 264ZM245.551 264C233.953 264 224.551 273.402 224.551 285C224.551 296.598 233.953 306 245.551 306C257.149 306 266.551 296.598 266.551 285C266.551 273.402 257.149 264 245.551 264ZM311.782 264C300.184 264 290.782 273.402 290.782 285C290.782 296.598 300.184 306 311.782 306C323.38 306 332.782 296.598 332.782 285C332.782 273.402 323.38 264 311.782 264Z"
-
-    function DesktopBrandMark() {
-      const height = 17
-      return React.createElement(
-        'svg',
-        {
-          width: height * BRAND_MARK_VIEWBOX.width / BRAND_MARK_VIEWBOX.height,
-          height,
-          viewBox: `${BRAND_MARK_VIEWBOX.x} ${BRAND_MARK_VIEWBOX.y} ${BRAND_MARK_VIEWBOX.width} ${BRAND_MARK_VIEWBOX.height}`,
-          fill: 'none',
-          'aria-hidden': 'true'
-        },
-        React.createElement('path', { d: BRAND_MARK_PATH, fill: 'currentColor' })
-      )
+    function DesktopBrandMark({ size: _size, width = 19, height = width, style, ...props } = {}) {
+      return React.createElement('img', {
+        ...props,
+        src: '/dsh-desktop-logo-dark.png',
+        width,
+        height,
+        alt: '',
+        'aria-hidden': 'true',
+        style: { objectFit: 'contain', ...style }
+      })
     }
 
     function DesktopBrandName() {
-      return React.createElement(BrandWordmark, { includeMark: false })
+      return React.createElement('span', { style: { fontWeight: 650 } }, 'king-dsh')
     }
 
-    function ConversationBrandMark(props) {
-      return React.createElement(FishLogo, props)
+    function ConversationBrandMark({ size = 30, className, ...props }) {
+      return React.createElement(DesktopBrandMark, {
+        ...props,
+        className: ['dshDesktopHeroMark', className].filter(Boolean).join(' '),
+        width: size,
+        height: size,
+        'data-king-dsh-hero-mark': true
+      })
+    }
+
+    function ConversationBrandContent({ t }) {
+      return React.createElement(
+        'span',
+        { className: 'dshDesktopHeroCopy', 'data-king-dsh-hero-copy': true },
+        React.createElement('span', { className: 'dshDesktopHeroTitle' }, t('heroTitle')),
+        React.createElement('span', { className: 'dshDesktopHeroHint' }, t('heroHint'))
+      )
     }
 
     function OpenUnpreviewableFile({ absolutePath, openWorkspacePath }) {
@@ -104,14 +121,49 @@ window.__ModuleLoader__.load({
       }, unread ? (chinese ? '标为已读' : 'Mark as read') : (chinese ? '标为未读' : 'Mark as unread'))
     }
 
-    const inject = ['slots', 'remote.session', 'sessions', 'uiWorkspace']
+    const inject = ['slots', 'locale', 'remote.session', 'sessions', 'uiWorkspace']
     function apply(ctx) {
       ctx.effect(() => {
-        const id = 'dsh-desktop-preset-toolbar-style'
-        if (document.getElementById(id)) return
-        const style = document.createElement('style')
-        style.id = id
-        style.textContent = `
+        const disposeLocale = ctx.locale.register(NS, copy)
+        const id = 'dsh-desktop-client-ui-style'
+        let style
+        if (!document.getElementById(id)) {
+          style = document.createElement('style')
+          style.id = id
+          style.textContent = `
+          .dshDesktopHeroCopy {
+            min-width:0; max-width:min(100%,420px); display:flex; flex-direction:column; align-items:flex-start;
+            gap:2px; text-align:left; animation:dshDesktopHeroCopyIn 280ms cubic-bezier(.2,.8,.2,1) both;
+          }
+          .dshDesktopHeroTitle {
+            color:var(--dsw-alias-label-primary); font-size:28px; font-weight:620;
+            line-height:34px; letter-spacing:-0.025em;
+          }
+          .dshDesktopHeroHint {
+            color:var(--dsw-alias-label-secondary); font-size:13px; font-weight:400;
+            line-height:20px; letter-spacing:0;
+          }
+          .dshDesktopHeroMark {
+            flex:none; object-fit:contain; filter:drop-shadow(0 5px 12px color-mix(in srgb, var(--dsw-alias-state-business-primary) 24%, transparent));
+            animation:dshDesktopHeroMarkIn 360ms cubic-bezier(.2,.8,.2,1) both;
+            transition:transform 160ms ease, filter 160ms ease;
+          }
+          .dshDesktopHeroMark:hover {
+            transform:translateY(-1px) scale(1.04);
+            filter:drop-shadow(0 7px 16px color-mix(in srgb, var(--dsw-alias-state-business-primary) 34%, transparent));
+          }
+          @keyframes dshDesktopHeroCopyIn {
+            from { opacity:0; transform:translateY(5px); }
+            to { opacity:1; transform:none; }
+          }
+          @keyframes dshDesktopHeroMarkIn {
+            from { opacity:0; transform:translateY(4px) scale(.94); }
+            to { opacity:1; transform:none; }
+          }
+          @media (prefers-reduced-motion:reduce) {
+            .dshDesktopHeroCopy, .dshDesktopHeroMark { animation:none; transition:none; }
+            .dshDesktopHeroMark:hover { transform:none; }
+          }
           [data-dsh-preset-heading] { display:flex; align-items:center; flex-wrap:wrap; gap:12px 16px; }
           [data-dsh-preset-heading] h2 { margin:0; }
           [data-dsh-preset-actions] { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-left:auto; }
@@ -128,20 +180,30 @@ window.__ModuleLoader__.load({
             outline:2px solid var(--dsw-alias-state-business-primary); outline-offset:2px;
             background:var(--dsw-alias-bg-base);
           }
-        `
-        document.head.appendChild(style)
-        return () => style.remove()
+          `
+          document.head.appendChild(style)
+        }
+        return () => {
+          style?.remove()
+          if (typeof disposeLocale === 'function') disposeLocale()
+        }
       })
+      const t = ctx.locale.bind(NS)
       ctx.slots.inject('sidebar.brand.mark', () =>
         ctx.slots.inject('sidebar.brand.name', () =>
-          ctx.slots.inject('conversation.hero.brand.mark', function* () {
+          ctx.slots.inject('conversation.hero.brand.mark', () =>
+            ctx.slots.inject('conversation.hero.brand.content', function* () {
             yield ctx.slots.register({ name: 'sidebar.brand.mark' }, DesktopBrandMark)
             yield ctx.slots.register({ name: 'sidebar.brand.name' }, DesktopBrandName)
             yield ctx.slots.register(
               { name: 'conversation.hero.brand.mark' },
               ConversationBrandMark
             )
-          })
+            yield ctx.slots.register(
+              { name: 'conversation.hero.brand.content', inject: () => ({ t }) },
+              ConversationBrandContent
+            )
+          }))
         )
       )
       ctx.slots.inject('sidebar.right.tab.document.unpreviewable', () =>

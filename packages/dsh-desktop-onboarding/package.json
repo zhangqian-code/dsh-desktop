@@ -1,7 +1,7 @@
 {
   "name": "dsh-desktop-onboarding",
   "version": "0.1.0",
-  "description": "DSH Desktop first-run notice: the internal-testing declaration and project intro, with a shortcut to the models settings.",
+  "description": "king-dsh first-run notice: the internal-testing declaration and project intro, with a shortcut to the models settings.",
   "private": true,
   "type": "module",
   "main": "./index.js",

@@ -1,20 +1,20 @@
 {
-  "name": "dsh-desktop",
+  "name": "king-dsh",
   "version": "0.1.1",
   "description": "A cross-platform desktop shell for DeepSeek Harness.",
   "private": true,
   "type": "module",
   "main": "./out/main/index.js",
-  "author": "DataElement",
+  "author": "king-dsh contributors",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dataelement/dsh-desktop.git"
+    "url": "git+https://github.com/zhangqian-code/dsh-desktop.git"
   },
   "bugs": {
-    "url": "https://github.com/dataelement/dsh-desktop/issues"
+    "url": "https://github.com/zhangqian-code/dsh-desktop/issues"
   },
-  "homepage": "https://github.com/dataelement/dsh-desktop#readme",
+  "homepage": "https://github.com/zhangqian-code/dsh-desktop#readme",
   "keywords": [
     "deepseek",
     "harness",
@@ -34,13 +34,15 @@
     "test:watch": "vitest",
     "package:dir": "npm run build && electron-builder --dir",
     "package:dev:dir": "npm run build && electron-builder --dir --config electron-builder.dev.cjs",
-    "package:dev:mac:arm64": "node scripts/verify-target.mjs darwin arm64 && npm run build && electron-builder --mac --arm64 --publish never --config electron-builder.dev.cjs",
-    "package:dev:mac:x64": "node scripts/verify-target.mjs darwin x64 && npm run build && electron-builder --mac --x64 --publish never --config electron-builder.dev.cjs",
-    "package:dev:win": "node scripts/verify-target.mjs win32 x64 && npm run build && node scripts/electron-builder-windows.mjs --win --x64 --publish never --config electron-builder.dev.cjs",
-    "package:mac": "npm run build && electron-builder --mac --publish never",
-    "package:mac:arm64": "node scripts/verify-target.mjs darwin arm64 && npm run build && electron-builder --mac --arm64 --publish never",
-    "package:mac:x64": "node scripts/verify-target.mjs darwin x64 && npm run build && electron-builder --mac --x64 --publish never",
-    "package:win": "node scripts/verify-target.mjs win32 x64 && npm run build && node scripts/electron-builder-windows.mjs --win --x64 --publish never",
+    "package:local": "node scripts/package-desktop.mjs --mode development --publish never",
+    "package:local:install": "node scripts/package-desktop.mjs --mode development --publish never --install --launch",
+    "package:dev:mac:arm64": "node scripts/package-desktop.mjs --mode development --platform darwin --arch arm64 --network inherit --publish never",
+    "package:dev:mac:x64": "node scripts/package-desktop.mjs --mode development --platform darwin --arch x64 --network inherit --publish never",
+    "package:dev:win": "node scripts/package-desktop.mjs --mode development --platform win32 --arch x64 --network inherit --publish never",
+    "package:mac": "node scripts/package-desktop.mjs --mode production --platform darwin --network inherit --publish never",
+    "package:mac:arm64": "node scripts/package-desktop.mjs --mode production --platform darwin --arch arm64 --network inherit --publish never",
+    "package:mac:x64": "node scripts/package-desktop.mjs --mode production --platform darwin --arch x64 --network inherit --publish never",
+    "package:win": "node scripts/package-desktop.mjs --mode production --platform win32 --arch x64 --network inherit --publish never",
     "ppt:build": "node scripts/prepare-ppt-runtime.mjs",
     "pretest": "npm run office:prepare && npm run ppt:build",
     "pretest:watch": "npm run office:prepare && npm run ppt:build",
@@ -313,8 +315,8 @@
     "koffi": "3.1.5"
   },
   "build": {
-    "appId": "io.dsh.desktop",
-    "productName": "DSH Desktop",
+    "appId": "com.king.dsh",
+    "productName": "king-dsh",
     "asar": true,
     "asarUnpack": [
       "**/*.{node,dylib,dll,so,exe}",
@@ -467,7 +469,7 @@
       }
     ],
     "detectUpdateChannel": false,
-    "artifactName": "dsh-desktop-${os}-${arch}.${ext}",
+    "artifactName": "king-dsh-${os}-${arch}.${ext}",
     "mac": {
       "category": "public.app-category.developer-tools",
       "icon": "build/icon.icns",
@@ -501,7 +503,7 @@
       ]
     },
     "nsis": {
-      "artifactName": "dsh-desktop-windows-${arch}-setup.${ext}",
+      "artifactName": "king-dsh-windows-${arch}-setup.${ext}",
       "include": "build/installer.nsh",
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,

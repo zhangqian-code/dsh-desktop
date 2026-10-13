@@ -56,7 +56,7 @@ async function main(): Promise<void> {
   let closed = 0
   for (const scenario of ['safe-mode', 'plugin-recovery', 'multiple-plugins', 'market-offline', 'unidentified-plugin']) {
     const page = scenario === 'unidentified-plugin' || scenario === 'multiple-plugins' || scenario === 'market-offline' ? 'plugin-recovery' : scenario
-    await parent.loadURL('data:text/html,<body style="background:%2318181b;color:%23999">DSH Desktop</body>')
+    await parent.loadURL('data:text/html,<body style="background:%2318181b;color:%23999">king-dsh</body>')
     // In the app the Safe Mode page is an iframe the Harness page's preload
     // mounts over its main pane; here it fills the window, which gives the
     // same viewport its layout must fit.
